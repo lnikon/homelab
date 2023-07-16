@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  pihole:
+    container_name: pihole-vlan
+    image: pihole/pihole:latest
+    hostname: pihole
+    domainname: local
+    cap_add:
+      - NET_ADMIN
+    networks:
+      macvlan0: # same as network specified below
+        ipv4_address: 192.168.5.224
+    dns:
+      - 127.0.0.1 # optional fallback DNS
+      - 1.1.1.1 # optional fallback DNS
+    ports: # expose all pihole ports.
+      - 443/tcp
+      - 53/tcp
+      - 53/udp
+      - 67/udp
+      - 80/tcp
+    volumes: # mount our data volumes.
+       - './etc-pihole/:/etc/pihole/'
+       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+       - './backups/:/backups/' # backups explained later
+    environment: # set variables for pihole configuration.
+      ServerIP: 192.168.5.224 # must match ipv4_address above
+      VIRTUAL_HOST: pihole.local  # Must be hostname + domainname from above
+      WEBPASSWORD: ""
+      TZ: 'Asia/Yerevan' # pick your timezone
+    restart: unless-stopped
+networks:
+  macvlan0:   # externally created network (later in article)
+    external: true
