@@ -1,4 +1,5 @@
 # homelab
+Low-cost, energy-efficient home cluster based on Raspberry Pi 4's and k3s.
 
 ## Installation
 
